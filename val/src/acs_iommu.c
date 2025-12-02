@@ -38,7 +38,8 @@ val_iommu_execute_tests(uint32_t num_hart, uint32_t *g_sw_view)
 
   if (g_sw_view[G_SW_OS]) {
       val_print(ACS_PRINT_ERR, "\nOperating System View:\n", 0);
-      status |= os_iom001_entry(num_hart);
+      status |= os_iom005_entry(num_hart);
+      status |= os_iom001_entry(num_hart);      
   }
   val_print_test_end(status, "IOMMU");
 

@@ -165,7 +165,8 @@ typedef enum {
 
   /* RV porting */
   ENTRY_TYPE_RINTC,
-  ENTRY_TYPE_PLIC
+  ENTRY_TYPE_PLIC,
+  ENTRY_TYPE_APLIC
 }GIC_INFO_TYPE_e;
 
 /* Interrupt Trigger Type */
@@ -187,6 +188,10 @@ typedef struct {
   UINT32 flags;
   UINT32 spi_count;
   UINT32 spi_base;
+
+  /*For RV porting*/
+  UINT16   idc_num;  // Number of IDC entries
+  UINT16   external_interrupt_sources;
 }GIC_INFO_ENTRY;
 
 /**

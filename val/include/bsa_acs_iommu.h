@@ -10,4 +10,7 @@
 uint32_t
 os_iom001_entry(uint32_t num_hart);
 
+uint32_t
+os_iom005_entry(uint32_t num_hart);
+
 #endif

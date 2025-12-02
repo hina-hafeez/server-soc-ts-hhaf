@@ -138,6 +138,10 @@ void val_gic_free_msi(uint32_t bdf, uint32_t device_id, uint32_t its_id,
 
 uint32_t val_gic_max_supervisor_intr_num(void);
 uint32_t val_gic_max_guest_intr_num(void);
+uint8_t val_gic_is_aplic_present(void);
+uint64_t val_gic_get_aplic_address(void);
+int32_t  val_gic_get_idc_num(void);
+uint16_t val_gic_get_external_interrupt_sources(void);
 
 /* GICv2m APIs */
 typedef enum {
@@ -429,5 +433,14 @@ typedef enum {
 void val_mng_create_info_table(uint64_t *mng_info_table);
 uint32_t val_mng_execute_tests(uint32_t num_hart, uint32_t *g_sw_view);
 uint32_t val_mng_get_info(MNG_INFO_e type);
+
+/* For RV porting, interrupt types */
+typedef enum {
+
+  /* RV porting */
+  ENTRY_TYPE_RINTC = 4103,
+  ENTRY_TYPE_PLIC,
+  ENTRY_TYPE_APLIC
+}RV_INFO_TYPE_e;
 
 #endif

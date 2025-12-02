@@ -326,6 +326,10 @@ typedef struct {
   uint32_t flags;
   uint32_t spi_count;
   uint32_t spi_base;
+  
+  /*For RV*/
+  UINT16   idc_num;  // Number of IDC entries
+  UINT16   external_interrupt_sources;
 }GIC_INFO_ENTRY;
 
 /**

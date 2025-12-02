@@ -49,6 +49,7 @@ pal_gic_create_info_table(GIC_INFO_TABLE *GicTable)
 {
   EFI_ACPI_6_1_GIC_STRUCTURE    *Entry = NULL;
   EFI_ACPI_6_5_IMSIC_STRUCTURE  *ImsicEntry = NULL;
+  EFI_ACPI_6_5_APLIC_STRUCTURE  *AplicEntry = NULL;
   GIC_INFO_ENTRY                *GicEntry = NULL;
   UINT32                         Length= 0;
   UINT32                         TableLength;
@@ -95,6 +96,7 @@ pal_gic_create_info_table(GIC_INFO_TABLE *GicTable)
   // } while(Length < TableLength);
 
   Entry = (EFI_ACPI_6_1_GIC_STRUCTURE *) (gMadtHdr + 1);
+
   Length = sizeof (EFI_ACPI_6_1_MULTIPLE_APIC_DESCRIPTION_TABLE_HEADER);
 
   do {
@@ -104,11 +106,27 @@ pal_gic_create_info_table(GIC_INFO_TABLE *GicTable)
       bsa_print(ACS_PRINT_INFO, L"   RISC-V IMSIC is found\n");
       GicTable->header.supervisor_intr_num = ImsicEntry->SupervisorModeInterruptIdentityNumber;
       GicTable->header.guest_intr_num = ImsicEntry->GuestModeInterruptIdentityNumber;
+      GicEntry++;
     }
 
     if (Entry->Type == EFI_ACPI_6_5_PLIC) {
-      GicEntry->type = ENTRY_TYPE_PLIC;
+
+      GicEntry->type = ENTRY_TYPE_APLIC;
       bsa_print(ACS_PRINT_INFO, L"   RISC-V PLIC is found, record field TBD\n");
+      GicEntry++;
+    }
+
+    if (Entry->Type == EFI_ACPI_6_5_APLIC) {
+      AplicEntry = (EFI_ACPI_6_5_APLIC_STRUCTURE *) Entry;
+      GicEntry->type = ENTRY_TYPE_APLIC;
+      GicEntry->base = AplicEntry->APLICAddress;
+      GicEntry->length = AplicEntry->Length;
+      GicEntry->flags = AplicEntry->Flags;
+      GicEntry->idc_num = AplicEntry->IDCNumber;  // Number of IDC entries
+      GicEntry->external_interrupt_sources = AplicEntry->ExternalInterruptSources;
+      bsa_print(ACS_PRINT_INFO, L"   RISC-V APLIC is found, base 0x%lx, length 0x%lx\n",
+                GicEntry->base, GicEntry->length);
+      GicEntry++;
     }
 
     Length += Entry->Length;

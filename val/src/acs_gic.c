@@ -63,6 +63,7 @@ val_iic_execute_tests(uint32_t num_hart, uint32_t *g_sw_view)
       status |= os_i003_entry(num_hart);
       status |= os_i004_entry(num_hart);
       status |= os_i005_entry(num_hart);
+      status |= os_i006_entry(num_hart);
       // status |= os_v2m001_entry(num_hart);
       // status |= os_v2m002_entry(num_hart);
       // status |= os_v2m003_entry(num_hart);
@@ -657,4 +658,104 @@ uint32_t
 val_gic_max_guest_intr_num(void)
 {
   return g_gic_info_table->header.guest_intr_num;
+}
+
+uint8_t
+val_gic_is_aplic_present(void)
+{
+  uint8_t Index = 0;
+
+  if (g_gic_info_table == NULL)
+  {
+    val_print(ACS_PRINT_ERR, "IIC INFO table not available\n", 0);
+    return 0;
+  }
+
+  while (g_gic_info_table->gic_info[Index].type != 0xFF)
+  {
+    val_print(ACS_PRINT_INFO, "\n Index is %d \n", Index);
+    val_print(ACS_PRINT_INFO, "\n Type is %d \n", g_gic_info_table->gic_info[Index].type);
+
+    if (g_gic_info_table->gic_info[Index].type == ENTRY_TYPE_APLIC)
+    {
+      val_print(ACS_PRINT_INFO, "\n APLIC is present in the system\n", 0);
+      return 1;
+    }
+    Index++;
+  }
+
+  val_print(ACS_PRINT_INFO, "APLIC is not present in the system\n", 0);
+  return 0;
+}
+
+uint64_t val_gic_get_aplic_address(void)
+{
+  uint8_t Index = 0;
+
+  if (g_gic_info_table == NULL)
+  {
+    val_print(ACS_PRINT_ERR, "IIC INFO table not available\n", 0);
+    return 0;
+  }
+
+  while (g_gic_info_table->gic_info[Index].type != 0xFF)
+  {
+    if (g_gic_info_table->gic_info[Index].type == ENTRY_TYPE_APLIC)
+    {
+      val_print(ACS_PRINT_INFO, "APLIC is present in the system\n", 0);
+      return g_gic_info_table->gic_info[Index].base;
+    }
+    Index++;
+  }
+
+  val_print(ACS_PRINT_INFO, "APLIC is not present in the system\n", 0);
+  return 0;
+}
+
+int32_t  val_gic_get_idc_num(void)
+{
+  uint8_t Index = 0;
+
+  if (g_gic_info_table == NULL)
+  {
+    val_print(ACS_PRINT_ERR, "IIC INFO table not available\n", 0);
+    return -1;
+  }
+
+  while (g_gic_info_table->gic_info[Index].type != 0xFF)
+  {
+    if (g_gic_info_table->gic_info[Index].type == ENTRY_TYPE_APLIC)
+    {
+      val_print(ACS_PRINT_INFO, "APLIC is present in the system\n", 0);
+      return g_gic_info_table->gic_info[Index].idc_num;
+    }
+    Index++;
+  }
+
+  val_print(ACS_PRINT_INFO, "APLIC is not present in the system\n", 0);
+  return -1;
+}
+
+uint16_t val_gic_get_external_interrupt_sources(void)
+{
+  uint8_t Index = 0;
+
+  if (g_gic_info_table == NULL)
+  {
+    val_print(ACS_PRINT_ERR, "IIC INFO table not available\n", 0);
+    return 0;
+  }
+
+  while (g_gic_info_table->gic_info[Index].type != 0xFF)
+  {
+    if (g_gic_info_table->gic_info[Index].type == ENTRY_TYPE_APLIC)
+    {
+      val_print(ACS_PRINT_INFO, "APLIC is present in the system\n", 0);
+      return g_gic_info_table->gic_info[Index].external_interrupt_sources;
+    }
+    Index++;
+  }
+
+  val_print(ACS_PRINT_INFO, "APLIC is not present in the system\n", 0);
+  return 0;
 }

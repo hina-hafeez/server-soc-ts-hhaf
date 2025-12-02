@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "bsa_acs_hart.h": "c",
+        "bsa_acs_iic.h": "c",
+        "bsa_acs_common.h": "c",
+        "gic.h": "c",
+        "bsa_acs_gic.h": "c",
+        "bsa_acs_val.h": "c",
+        "pal_uefi.h": "c",
+        "pal_interface.h": "c"
+    }
+}
